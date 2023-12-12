@@ -8,7 +8,7 @@ Author: Jorge Amestoy
 Version: 1.0.0
 Author URI: http://mjorge.amestoy/
 */
-function crearTabla(){
+function crear_tabla(){
     global $wpdb;
     $table_name = $wpdb->prefix . 'mayusculas';
     $charset_collate = $wpdb->get_charset_collate();
@@ -21,12 +21,12 @@ function crearTabla(){
     require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
     dbDelta($sql);
 }
-add_action('plugins_loaded', 'crearTabla');
+add_action('plugins_loaded', 'crear_tabla');
 
 /**
  * Funcion que inserta datos en la tabla
  */
-function convertirMayusculas($text){
+function convertir_mayusculas($text){
     global $wpdb;
     $table_name = $wpdb->prefix . 'mayusculas';
 
@@ -52,4 +52,7 @@ function convertirMayusculas($text){
     // Devolver el texto en mayúsculas
     return strtoupper($text);
 }
+
+add_filter( 'the_content', 'convertir_mayusculas');
+add_filter( 'the_title', 'convertir_mayusculas');
 
