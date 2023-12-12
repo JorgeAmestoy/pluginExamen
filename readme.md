@@ -28,8 +28,10 @@ Creo una tabla llamada **mayusculas** que va a contener tres columnas:
 - el texto en mayúsculas (**uppercaseText**)
 
 ### CONVERTIR_MAYUSCULAS()
+
 En esta función desarrollo la lógica del plugin. A diferencia del que escribí en el folio,
-lo comprimo todo en una sola función eliminando los métodos innecesarios como *filtrarContenido()*.
+lo comprimo todo en una sola función eliminando los métodos innecesarios como *filtrarContenido()*.<br>
+
 ----------------------------------
 ```
 global $wpdb;
