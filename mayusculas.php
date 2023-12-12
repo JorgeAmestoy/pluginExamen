@@ -22,3 +22,34 @@ function crearTabla(){
     dbDelta($sql);
 }
 add_action('plugins_loaded', 'crearTabla');
+
+/**
+ * Funcion que inserta datos en la tabla
+ */
+function convertirMayusculas($text){
+    global $wpdb;
+    $table_name = $wpdb->prefix . 'mayusculas';
+
+    // Verificar si el texto es un borrador automático o está vacío
+    if (empty($text) || strpos($text, 'Borrador automático') !== false) {
+        return $text;
+    }
+    // Verificar si la palabra ya existe en la tabla
+    $palabraExistente = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE originalText = %s", $text));
+
+    // Si la palabra no existe, insertarla en la tabla
+    if (!$palabraExistente) {
+        // Obtener el texto sin las etiquetas HTML
+        $textoSinEtiquetas = strip_tags($text);
+        $wpdb->insert(
+            $table_name,
+            array(
+                'originalText'  => $textoSinEtiquetas,
+                'uppercaseText' => strtoupper($textoSinEtiquetas)
+            )
+        );
+    }
+    // Devolver el texto en mayúsculas
+    return strtoupper($text);
+}
+
