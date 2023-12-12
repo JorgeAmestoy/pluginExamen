@@ -27,6 +27,9 @@ Creo una tabla llamada **mayusculas** que va a contener tres columnas:
 - el texto original (**originalText**)
 - el texto en mayúsculas (**uppercaseText**)
 
+----------------------------------
+
+
 ### CONVERTIR_MAYUSCULAS()
 
 En esta función desarrollo la lógica del plugin. A diferencia del que escribí en el folio,
