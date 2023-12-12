@@ -2,7 +2,7 @@
 
 ## UPPERCASE PLUGIN
 
-Este plugin convierte el texto de los posts y títulos a mayúsculas almacenando las palabra 
+Este plugin convierte el texto de los posts y títulos a mayúsculas almacenando las palabras 
 en mayúsculas en una tabla de la base de datos.
 
 ### CREAR_TABLA()
@@ -47,6 +47,8 @@ para poder utilizarla en las consultas posteriores.<br>
 ```
 Al trabajar directamente con el contenido de los posts, es necesario comprobar si el texto está vacío o si es un borrador automático
 para que no se vea reflejado en la tabla de la base de datos.<br>
+Con `empty()` verifico que el texto está vacío y por otro lado, `strpos()` es una función de PHP
+que en este caso busca la cadena 'Borrador automático' en el texto. 
 
 ---------------------------------
 
@@ -69,10 +71,9 @@ if (!$palabraExistente({
     }
 ```
 Si la palabra no existe, la inserto en la tabla en las columnas correspondientes.
-Uso `strip_tags($text);` para eliminar las etiquetas HTML del texto y que estas 
-no se inserten en la tabla.<br>
-También remarcar el uso de 'strtoupper()' para convertir el texto a mayúsculas.<br>
-Esta función devuelve el texto en mayúsculas para mostrarlo en los posts.<br>
+Uso `strip_tags($text)` para eliminar las etiquetas HTML del texto y que estas 
+no se inserten en la tabla y `strtoupper()` para convertir el texto a mayúsculas.<br>
+Esta función devuelve el texto cambiado para mostrarlo en los posts.<br>
 
 ---------------------------------
 Finalmente añado los **filtros**:
