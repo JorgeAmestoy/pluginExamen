@@ -1,90 +1,39 @@
-# EXAMEN PLUGINS
+## TAREA PLUGINS
 
-## UPPERCASE PLUGIN
+Un **plugin** es un componente de software modular diseñado para ampliar las capacidades de una aplicación existente sin requerir cambios en su código base. Esto facilita la personalización y la adaptación de aplicaciones a las necesidades específicas de los usuarios.
 
-Este plugin convierte el texto de los posts y títulos a mayúsculas almacenando las palabras 
-en mayúsculas en una tabla de la base de datos.
+Así, en nuestro WordPress podemos crear y añadir plugins. Para ello hay que crear funciones, por ejemplo:
 
-### CREAR_TABLA()
+**PLUGIN 1:**
 ```
-function crear_tabla(){
-    global $wpdb;
-    $table_name = $wpdb->prefix . 'mayusculas';
-    $charset_collate = $wpdb->get_charset_collate();
-    $sql = "CREATE TABLE IF NOT EXISTS $table_name (
-       id mediumint(9) NOT NULL AUTO_INCREMENT,
-       originalText text NOT NULL,
-       uppercaseText text NOT NULL,
-       PRIMARY KEY  (id)
-   ) $charset_collate;";
-    require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-    dbDelta($sql);
+function renym_wordpress_typo_fix( $text ) {
+    return str_replace( 'WordPress', 'WordPressDAM', $text );
 }
-add_action('plugins_loaded', 'crear_tabla');
+
+add_filter( 'the_content', 'renym_wordpress_typo_fix' );
 ```
-Creo una tabla llamada **mayusculas** que va a contener tres columnas:
-- el identificador de la fila (**id**)
-- el texto original (**originalText**)
-- el texto en mayúsculas (**uppercaseText**)
+Este plugin lo que hace es cambiar todas las palabras "WordPress" por "WordPressDAM" en el contenido de la página.<br>
 
-----------------------------------
+**renym_wordpress_typo_fix** es el nombre de la función, la cual acepta un parámetro **$text.** Dentro de la función, utiliza **str_replace** para reemplazar 'WordPress' por 'WordPressDAM' en el texto proporcionado.
+Por último, en la línea **`add_filter( 'the_content', 'renym_wordpress_typo_fix' );** agregamos un filtro que se ejecutará cuando se imprima el contenido de WordPress.<br>
 
-
-### CONVERTIR_MAYUSCULAS()
-
-En esta función desarrollo la lógica del plugin. A diferencia del que escribí en el folio,
-lo comprimo todo en una sola función eliminando los métodos innecesarios como *filtrarContenido()*.<br>
-
-----------------------------------
+--------------------
+**PLUGIN 2:**
 ```
-global $wpdb;
-$table_name = $wpdb->prefix . 'mayusculas';
+function renym_words_replace($text){
+$palabras = array("guapo","largo","gordo","alto","dulce");
+$antonimos = array("feo","corto","flaco","bajo","salado");
+    return str_replace( $palabras, $antonimos, $text );
+}
+add_filter( 'the_content', 'renym_words_replace' );
 ```
-Creo una variable que almacena el nombre de la tabla de la base de datos
-para poder utilizarla en las consultas posteriores.<br>
-
----------------------------------
-
-```
- if (empty($text) || strpos($text, 'Borrador automático') !== false) {
-        return $text;
-    }
-```
-Al trabajar directamente con el contenido de los posts, es necesario comprobar si el texto está vacío o si es un borrador automático
-para que no se vea reflejado en la tabla de la base de datos.<br>
-Con `empty()` verifico que el texto está vacío y por otro lado, `strpos()` es una función de PHP
-que en este caso busca la cadena 'Borrador automático' en el texto. 
-
----------------------------------
-
-```
-$palabraExistente = $wpdb->get_row($wpdb->prepare("SELECT * FROM $table_name WHERE originalText = %s", $text));
-```
-En esta línea compruebo si el texto ya existe en la tabla para no volver a insertarlo.<br>
-
----------------------------------
-```
-if (!$palabraExistente({
-       $textoSinEtiquetas = strip_tags($text);
-       $wpdb->insert(
-            $table_name,
-            array(
-                'originalText'  => $textoSinEtiquetas,
-                'uppercaseText' => strtoupper($textoSinEtiquetas)
-            )
-        );
-    }
-```
-Si la palabra no existe, la inserto en la tabla en las columnas correspondientes.
-Uso `strip_tags($text)` para eliminar las etiquetas HTML del texto y que estas 
-no se inserten en la tabla y `strtoupper()` para convertir el texto a mayúsculas.<br>
-Esta función devuelve el texto cambiado para mostrarlo en los posts.<br>
-
----------------------------------
-Finalmente añado los **filtros**:
-```
-add_filter( 'the_content', 'convertir_mayusculas' );
-add_filter( 'the_title', 'convertir_mayusculas' );
-```
+En cambio, este plugin lo que hace es cambiar las palabras "guapo","largo","gordo","alto","dulce" por sus antónimos en el contenido de la página.<br>
 
 
+
+Siendo **renym_words_replace** el nombre de la función/método, el cual acepta un parámetro $text, se definen dos arrays:
+- **$palabras :** que contiene las palabras a buscar
+- **$antonimos :** que contiene las palabras a reemplazar.
+
+Luego utilizamos el  **str_replace** para reemplazar todas las palabras definidas en *$palabras* con las palabras
+definidas en el otro array *$antonimos*. Finalmente, agrega un filtro a **'the_content'**, que se ejecutará cuando se imprima el contenido de WordPress.
